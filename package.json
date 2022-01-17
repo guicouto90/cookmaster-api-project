@@ -6,7 +6,7 @@
   "scripts": {
     "test": "jest --runInBand --detectOpenHandles --forceExit",
     "start": "node .",
-    "dev": "nodemon .",
+    "dev": "nodemon app.js",
     "dev:test": "mocha ./src/integration-tests/**/*$NAME*.{test,spec}.js --exit",
     "dev:test:coverage": "nyc --all npm run dev:test",
     "dev:test:coverage:json": "nyc --all --reporter=json-summary npm run dev:test",
@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/tryber/sd-0x-cookmaster-v2#readme",
   "dependencies": {
+    "@hapi/joi": "^17.1.1",
     "body-parser": "1.19.0",
     "dotenv": "8.2.0",
     "express": "4.17.1",
