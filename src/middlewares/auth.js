@@ -13,6 +13,18 @@ const generateToken = (email) => {
   return token;
 };
 
+const validateToken = (token) => {
+  try {
+    const data = jwt.verify(token, secret);
+
+    return data;
+  } catch (error) {
+    const error1 = { status: 401, message: 'jwt malformed' };
+    throw error1;
+  }
+};
+
 module.exports = {
   generateToken,
+  validateToken,
 };
