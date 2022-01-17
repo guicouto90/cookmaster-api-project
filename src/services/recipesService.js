@@ -1,6 +1,7 @@
 const Joi = require('@hapi/joi');
+const { ObjectId } = require('mongodb');
 const { validateToken } = require('../middlewares/auth');
-const { createRecipe, findAllRecipes } = require('../models/recipesModel');
+const { createRecipe, findAllRecipes, findById } = require('../models/recipesModel');
 const { findByEmail } = require('../models/usersModels');
 
 const recipeSchema = Joi.object({
@@ -48,8 +49,26 @@ const getAllRecipes = async () => {
   return recipes;
 };
 
+const getById = async (id) => {
+  const valid = ObjectId.isValid(id);
+
+  if (!valid) {
+    const error = { status: 404, message: 'recipe not found' };
+    throw error;
+  }
+
+  const recipe = await findById(id);
+  if (!recipe) {
+    const error = { status: 404, message: 'recipe not found' };
+    throw error;
+  }
+
+  return recipe;
+};
+
 module.exports = {
   validateRecipe,
   insertRecipe,
   getAllRecipes,
+  getById,
 };
