@@ -1,6 +1,6 @@
 const Joi = require('@hapi/joi');
 const { validateToken } = require('../middlewares/auth');
-const { createRecipe } = require('../models/recipesModel');
+const { createRecipe, findAllRecipes } = require('../models/recipesModel');
 const { findByEmail } = require('../models/usersModels');
 
 const recipeSchema = Joi.object({
@@ -25,8 +25,9 @@ const insertRecipe = async (name, ingredients, preparation, token) => {
     throw error;
   }
 
-  const recipeId = await createRecipe(name, ingredients, preparation);
   const { _id } = await findByEmail(verify.email);
+
+  const recipeId = await createRecipe(name, ingredients, preparation, _id);
 
   const newRecipe = {
     recipe: {
@@ -41,7 +42,14 @@ const insertRecipe = async (name, ingredients, preparation, token) => {
   return newRecipe;
 };
 
+const getAllRecipes = async () => {
+  const recipes = await findAllRecipes();
+
+  return recipes;
+};
+
 module.exports = {
   validateRecipe,
   insertRecipe,
+  getAllRecipes,
 };
