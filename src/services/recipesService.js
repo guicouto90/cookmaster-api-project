@@ -1,12 +1,14 @@
 const Joi = require('@hapi/joi');
 const { ObjectId } = require('mongodb');
 const { validateToken } = require('../middlewares/auth');
+const uploadFile = require('../middlewares/upload');
 const { 
   createRecipe, 
   findAllRecipes, 
   findById, 
   editRecipe, 
-  deleteRecipe, 
+  deleteRecipe,
+  insertImage, 
 } = require('../models/recipesModel');
 const { findByEmail } = require('../models/usersModels');
 
@@ -105,6 +107,23 @@ const eraseRecipe = async (token, id) => {
   await deleteRecipe(id);
 };
 
+const insertImageById = async (token, id) => {
+  if (!token) {
+    const error = { status: 401, message: 'missing auth token' };
+    throw error;
+  }
+  const verify = validateToken(token);
+  if (!verify.email) {
+    const error = { status: 401, message: 'jwt malformed' };
+    throw error;
+  }
+  uploadFile(id).single('file');
+  const image = `localhost:3000/src/uploads/${id}.jpeg`;
+  const { _id, name, ingredients, preparation, userId } = await findById(id);
+  await insertImage(id, image);
+  return { _id, name, ingredients, preparation, userId, image };
+};
+
 module.exports = {
   validateRecipe,
   insertRecipe,
@@ -112,4 +131,5 @@ module.exports = {
   getById,
   updateRecipe,
   eraseRecipe,
+  insertImageById,
 };
