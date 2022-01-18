@@ -3,7 +3,8 @@ const {
   newRecipe, 
   listRecipes, 
   listById, 
-  updateById, 
+  updateById,
+  eraseById, 
 } = require('../controllers/recipesController');
 
 const recipesRouter = express.Router();
@@ -15,5 +16,7 @@ recipesRouter.get('/', listRecipes);
 recipesRouter.get('/:id', listById);
 
 recipesRouter.put('/:id', updateById);
+
+recipesRouter.delete('/:id', eraseById);
 
 module.exports = recipesRouter;

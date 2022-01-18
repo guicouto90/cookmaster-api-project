@@ -1,7 +1,13 @@
 const Joi = require('@hapi/joi');
 const { ObjectId } = require('mongodb');
 const { validateToken } = require('../middlewares/auth');
-const { createRecipe, findAllRecipes, findById, editRecipe } = require('../models/recipesModel');
+const { 
+  createRecipe, 
+  findAllRecipes, 
+  findById, 
+  editRecipe, 
+  deleteRecipe, 
+} = require('../models/recipesModel');
 const { findByEmail } = require('../models/usersModels');
 
 const recipeSchema = Joi.object({
@@ -85,10 +91,25 @@ const updateRecipe = async (id, token, body) => {
   return editedRecipe;
 };
 
+const eraseRecipe = async (token, id) => {
+  if (!token) {
+    const error = { status: 401, message: 'missing auth token' };
+    throw error;
+  }
+  const verify = validateToken(token);
+  if (!verify.email) {
+    const error = { status: 401, message: 'jwt malformed' };
+    throw error;
+  }
+
+  await deleteRecipe(id);
+};
+
 module.exports = {
   validateRecipe,
   insertRecipe,
   getAllRecipes,
   getById,
   updateRecipe,
+  eraseRecipe,
 };

@@ -32,9 +32,15 @@ const editRecipe = async (id, body, userId) => {
   );
 };
 
+const deleteRecipe = async (id) => {
+  const connect = await connection();
+  await connect.collection('recipes').deleteOne({ _id: ObjectId(id) });
+};
+
 module.exports = {
   createRecipe,
   findAllRecipes,
   findById,
   editRecipe,
+  deleteRecipe,
 };
