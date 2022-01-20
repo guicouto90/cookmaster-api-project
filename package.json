@@ -29,6 +29,7 @@
     "dotenv": "8.2.0",
     "express": "4.17.1",
     "express-rescue": "1.1.30",
+    "form-data": "^4.0.0",
     "frisby": "2.1.2",
     "jest": "26.4.1",
     "jsonwebtoken": "8.5.1",

@@ -1,7 +1,5 @@
 const Joi = require('@hapi/joi');
 const { ObjectId } = require('mongodb');
-const { validateToken } = require('../middlewares/auth');
-const uploadFile = require('../middlewares/upload');
 const { 
   createRecipe, 
   findAllRecipes, 
@@ -27,15 +25,10 @@ const validateRecipe = (body) => {
   }
 };
 
-const insertRecipe = async (name, ingredients, preparation, token) => {
-  const verify = validateToken(token);
-
-  if (!verify.email) {
-    const error = { status: 401, message: 'jwt malformed' };
-    throw error;
-  }
-
-  const { _id } = await findByEmail(verify.email);
+const insertRecipe = async (name, ingredients, preparation, email) => {
+  // const verify = validateToken(token);
+  console.log(email);
+  const { _id } = await findByEmail(email);
 
   const recipeId = await createRecipe(name, ingredients, preparation, _id);
 
@@ -71,11 +64,10 @@ const getById = async (id) => {
     const error = { status: 404, message: 'recipe not found' };
     throw error;
   }
-
   return recipe;
 };
 
-const updateRecipe = async (id, token, body) => {
+/* const verifyToken = (token) => {
   if (!token) {
     const error = { status: 401, message: 'missing auth token' };
     throw error;
@@ -84,8 +76,14 @@ const updateRecipe = async (id, token, body) => {
   if (!verify.email) {
     const error = { status: 401, message: 'jwt malformed' };
     throw error;
-  }
-  const { _id } = await findByEmail(verify.email);
+  };
+
+  return verify;
+} */
+
+const updateRecipe = async (id, email, body) => {
+  // const { email } = verifyToken(token);
+  const { _id } = await findByEmail(email);
   await editRecipe(id, body, _id);
   const { name, ingredients, preparation } = body;
   const editedRecipe = { _id: id, name, ingredients, preparation, userId: _id };
@@ -93,35 +91,25 @@ const updateRecipe = async (id, token, body) => {
   return editedRecipe;
 };
 
-const eraseRecipe = async (token, id) => {
-  if (!token) {
-    const error = { status: 401, message: 'missing auth token' };
-    throw error;
-  }
-  const verify = validateToken(token);
-  if (!verify.email) {
-    const error = { status: 401, message: 'jwt malformed' };
-    throw error;
-  }
-
+const eraseRecipe = async (id) => {
+  // verifyToken(token);
   await deleteRecipe(id);
 };
 
-const insertImageById = async (token, id) => {
-  if (!token) {
-    const error = { status: 401, message: 'missing auth token' };
-    throw error;
-  }
-  const verify = validateToken(token);
-  if (!verify.email) {
-    const error = { status: 401, message: 'jwt malformed' };
-    throw error;
-  }
-  uploadFile(id).single('file');
+const insertImageById = async (id) => {
+  // verifyToken(token);
   const image = `localhost:3000/src/uploads/${id}.jpeg`;
   const { _id, name, ingredients, preparation, userId } = await findById(id);
   await insertImage(id, image);
   return { _id, name, ingredients, preparation, userId, image };
+};
+
+const getImage = async (id) => {
+  const recipeId = id.split('.jpeg')[0];
+  console.log(recipeId);
+  const { image } = await findById(recipeId);
+
+  return image;
 };
 
 module.exports = {
@@ -132,4 +120,5 @@ module.exports = {
   updateRecipe,
   eraseRecipe,
   insertImageById,
+  getImage,
 };

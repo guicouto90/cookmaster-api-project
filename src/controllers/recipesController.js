@@ -5,16 +5,17 @@ const {
   getById,
   updateRecipe,
   eraseRecipe,
-  insertImageById, 
+  insertImageById,
+  getImage, 
 } = require('../services/recipesService');
 
 const newRecipe = async (req, res, next) => {
   try {
     const { name, ingredients, preparation } = req.body;
-    const { authorization } = req.headers;
+    const { email } = req;
 
     validateRecipe(req.body);
-    const recipe = await insertRecipe(name, ingredients, preparation, authorization);
+    const recipe = await insertRecipe(name, ingredients, preparation, email);
 
     return res.status(201).json(recipe);
   } catch (error) {
@@ -49,10 +50,11 @@ const listById = async (req, res, next) => {
 const updateById = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const { authorization } = req.headers;
-    
+    // const { authorization } = req.headers;
+    const { email } = req;
+    console.log(email);
     validateRecipe(req.body);
-    const recipe = await updateRecipe(id, authorization, req.body);
+    const recipe = await updateRecipe(id, email, req.body);
 
     return res.status(200).json(recipe);
   } catch (error) {
@@ -64,9 +66,8 @@ const updateById = async (req, res, next) => {
 const eraseById = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const { authorization } = req.headers;
     
-    await eraseRecipe(authorization, id);
+    await eraseRecipe(id);
 
     return res.status(204).json({});
   } catch (error) {
@@ -78,11 +79,20 @@ const eraseById = async (req, res, next) => {
 const newImage = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const { authorization } = req.headers;
-
-    const image = await insertImageById(authorization, id);
+    const image = await insertImageById(id);
 
     return res.status(200).json(image);
+  } catch (error) {
+    console.error(error.message);
+    next(error);
+  }
+};
+
+const listImageById = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const recipeImage = await getImage(id);
+    return res.status(200).json(recipeImage);
   } catch (error) {
     console.error(error.message);
     next(error);
@@ -96,4 +106,5 @@ module.exports = {
   updateById,
   eraseById,
   newImage,
+  listImageById,
 };

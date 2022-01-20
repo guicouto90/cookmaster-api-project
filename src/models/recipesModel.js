@@ -45,6 +45,13 @@ const insertImage = async (id, image) => {
   );
 };
 
+const findByImage = async (image) => {
+  const connect = await connection();
+  const query = await connect.collection('recipes').findOne({ image });
+
+  return query;
+};
+
 module.exports = {
   createRecipe,
   findAllRecipes,
@@ -52,4 +59,5 @@ module.exports = {
   editRecipe,
   deleteRecipe,
   insertImage,
+  findByImage,
 };

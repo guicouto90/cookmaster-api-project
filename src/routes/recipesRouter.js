@@ -1,29 +1,27 @@
 const express = require('express');
-const path = require('path');
 const { 
   newRecipe, 
   listRecipes, 
   listById, 
   updateById,
   eraseById,
-  newImage, 
+  newImage,
 } = require('../controllers/recipesController');
-// const uploads = require('../uploads')
+const { validateToken } = require('../middlewares/auth');
+const upload = require('../middlewares/upload');
 
 const recipesRouter = express.Router();
 
-recipesRouter.use(express.static(path.resolve(__dirname, '/uploads')));
-
-recipesRouter.post('/', newRecipe);
+recipesRouter.post('/', validateToken, newRecipe);
 
 recipesRouter.get('/', listRecipes);
 
 recipesRouter.get('/:id', listById);
 
-recipesRouter.put('/:id', updateById);
+recipesRouter.put('/:id', validateToken, updateById);
 
-recipesRouter.put('/:id/image', newImage);
+recipesRouter.put('/:id/image', validateToken, upload.single('image'), newImage);
 
-recipesRouter.delete('/:id', eraseById);
+recipesRouter.delete('/:id', validateToken, eraseById);
 
 module.exports = recipesRouter;

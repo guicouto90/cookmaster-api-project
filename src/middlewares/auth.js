@@ -1,5 +1,7 @@
 const jwt = require('jsonwebtoken');
 
+let error1;
+
 const secret = 'Co0kM@st&RPr0j3ct';
 
 const generateToken = (email) => {
@@ -13,14 +15,24 @@ const generateToken = (email) => {
   return token;
 };
 
-const validateToken = (token) => {
+const validateToken = (req, res, next) => {
   try {
-    const data = jwt.verify(token, secret);
-
-    return data;
+    const { authorization } = req.headers;
+    if (!authorization) {
+      const error = { status: 401, message: 'missing auth token' };
+      throw error;
+    }
+    const { email } = jwt.verify(authorization, secret);
+    req.email = email;
+    next();
   } catch (error) {
-    const error1 = { status: 401, message: 'jwt malformed' };
-    throw error1;
+    console.error(error.message);
+    if (error.message === 'missing auth token') {
+      error1 = { status: 401, message: 'missing auth token' };
+      next(error1);
+    }
+    error1 = { status: 401, message: 'jwt malformed' };
+    next(error1);
   }
 };
 
