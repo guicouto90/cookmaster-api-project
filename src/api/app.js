@@ -1,9 +1,9 @@
 const express = require('express');
+const path = require('path');
 const userRouter = require('../routes/usersRouter');
 const errorMiddleware = require('../middlewares/errorHandler');
 const loginRouter = require('../routes/loginRouter');
 const recipesRouter = require('../routes/recipesRouter');
-const imagesRouter = require('../routes/imagesRouter');
 
 const app = express();
 
@@ -21,7 +21,7 @@ app.use('/login', loginRouter);
 
 app.use('/recipes', recipesRouter);
 
-app.use('/images', imagesRouter);
+app.use('/images', express.static(path.resolve(__dirname, '..', 'uploads')));
 
 app.use(errorMiddleware);
 

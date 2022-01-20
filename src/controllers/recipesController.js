@@ -6,7 +6,6 @@ const {
   updateRecipe,
   eraseRecipe,
   insertImageById,
-  getImage, 
 } = require('../services/recipesService');
 
 const newRecipe = async (req, res, next) => {
@@ -50,7 +49,6 @@ const listById = async (req, res, next) => {
 const updateById = async (req, res, next) => {
   try {
     const { id } = req.params;
-    // const { authorization } = req.headers;
     const { email } = req;
     console.log(email);
     validateRecipe(req.body);
@@ -88,17 +86,6 @@ const newImage = async (req, res, next) => {
   }
 };
 
-const listImageById = async (req, res, next) => {
-  try {
-    const { id } = req.params;
-    const recipeImage = await getImage(id);
-    return res.status(200).json(recipeImage);
-  } catch (error) {
-    console.error(error.message);
-    next(error);
-  }
-};
-
 module.exports = {
   newRecipe,
   listRecipes,
@@ -106,5 +93,4 @@ module.exports = {
   updateById,
   eraseById,
   newImage,
-  listImageById,
 };
