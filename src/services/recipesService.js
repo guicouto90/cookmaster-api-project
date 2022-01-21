@@ -26,7 +26,6 @@ const validateRecipe = (body) => {
 };
 
 const insertRecipe = async (name, ingredients, preparation, email) => {
-  console.log(email);
   const { _id } = await findByEmail(email);
 
   const recipeId = await createRecipe(name, ingredients, preparation, _id);
