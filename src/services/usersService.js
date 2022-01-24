@@ -1,5 +1,5 @@
 const Joi = require('@hapi/joi');
-const { createUser, findByEmail } = require('../models/usersModels');
+const { createUser, findByEmail, getAllUsers } = require('../models/usersModels');
 
 const usersSchema = Joi.object({
   name: Joi.string().required(),
@@ -39,8 +39,40 @@ const insertUser = async (name, email, password) => {
   return newUser;
 };
 
+const listUsers = async () => {
+  const result = await getAllUsers();
+
+  return result;
+};
+
+const validateRoleAdmin = async (email) => {
+  const { role } = await findByEmail(email);
+  if (role !== 'admin') {
+    const error = { status: 403, message: 'Only admins can register new admins' };
+    throw error;
+  }
+};
+
+const insertAdmin = async (name, email, password) => {
+  const userId = await createUser(name, email, password, 'admin');
+
+  const newUser = {
+    user: {
+      name,
+      email,
+      role: 'admin',
+      _id: userId,
+    },
+  };
+
+  return newUser;
+}; 
+
 module.exports = {
   validateUser,
   insertUser,
   verifyEmail,
+  listUsers,
+  validateRoleAdmin,
+  insertAdmin,
 };

@@ -10,8 +10,6 @@ const server = require('../api/app') ;
 const { getConnection } = require('./connectionMock');
 const { MongoClient } = require('mongodb');
 
-const jwt = require('jsonwebtoken');
-
 let connectionMock;
 
 before(async() => {
@@ -23,23 +21,7 @@ after( () => {
   MongoClient.connect.restore();
 });
 
-/*
-  1 - Quando algum dos campos não sao informados:
-  name, email, password; Retorna o erro 400 com a mensagem: "Invalid entries. Try again"
-  2 - Se o campo email for invalido: retorna o erro 400 com a mensagem: "Invalid entries. Try again";
-  3 - Se algum dos campos forem diferentes de string, retorna o "Invalid entries. Try again." erro 400.
-  4 - Se o email ja foi cadastrado, retorna a mensagem: "Email already registered", erro 409;
-  5 - Se estiver tudo certo, retorna um objeto: 
-    user: {
-      name,
-      email,
-      role
-      id
-    };
-    com o codigo: 201
-
-*/ 
-describe('Quando o campo name, email ou password nao sao informados', async () => {
+describe('Quando o campo name, email ou password nao sao informados', () => {
   let response;
   before(async () => {
     response = await chai.request(server)
