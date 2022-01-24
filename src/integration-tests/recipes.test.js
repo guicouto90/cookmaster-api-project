@@ -11,7 +11,7 @@ const server = require('../api/app') ;
 const { getConnection } = require('./connectionMock');
 const { MongoClient } = require('mongodb');
 
-describe('POST /login', () => {
+describe('POST /recipes', () => {
   let connectionMock;
 
   before(async() => {
@@ -22,19 +22,21 @@ describe('POST /login', () => {
   after( () => {
     MongoClient.connect.restore();
   });
-
-  describe('Quando o campo email ou password nao sao informados', () => {
+  
+  describe('Quando o campo name, ingredients ou preparation não é informado ', () => {
     let response;
     before(async () => {
       response = await chai.request(server)
-        .post('/login')
+        .post('/recipes')
+        .set('authorization', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InVzZXJAb2suY29tIiwiaWF0IjoxNjQzMDYyNTc2LCJleHAiOjE2NDMwNjYxNzZ9.Ow0XFQRhboKhurOVtPZgO1dKXI17-zvfydWD7f6FIVc')
         .send({
-          email: 'robervaldo@teste.com',
+          name: "Banana com arroz",
+          ingredients: "Banana e arroz",
         });
     });
     
-    it('Retorna o status 401', () => {
-      expect(response).to.have.status(401);
+    it('Retorna o status 400', () => {
+      expect(response).to.have.status(400);
     });
   
     it('Retorna um objeto no body', () => {
@@ -45,40 +47,13 @@ describe('POST /login', () => {
       expect(response.body).to.have.property('message');
     })
   
-    it('A propriedade "message" tenha o valor: All fields must be filled', () => {
-      expect(response.body.message).to.be.equals('All fields must be filled');
+    it('A propriedade "message" tenha o valor: Invalid entries. Try again.', () => {
+      expect(response.body.message).to.be.equals('Invalid entries. Try again.');
     })
   });
   
-  describe('Quando pessoa usuária não existe ou senha é invalida', () => {
-    let response;
-    before(async () => {
-      response = await chai.request(server)
-        .post('/login')
-        .send({
-          email: 'fake@fake.com',
-          password: 'fakepassword'
-        });
-    });
-    
-    it('Retorna o status 401', () => {
-      expect(response).to.have.status(401);
-    });
   
-    it('Retorna um objeto no body', () => {
-      expect(response.body).to.be.an('object');
-    });
-  
-    it('A resposta possuia a propriedade "message"', () => {
-      expect(response.body).to.have.property('message');
-    })
-  
-    it('A propriedade "message" tenha o valor: Incorrect username or password', () => {
-      expect(response.body.message).to.be.equals('Incorrect username or password');
-    })
-  });
-  
-  describe('Quando login é feito com sucesso', () => {
+  /*describe('Quando login é feito com sucesso', () => {
     let response;
     before(async () => {
       const usersCollection = connectionMock.db('Cookmaster').collection('users');
@@ -94,7 +69,6 @@ describe('POST /login', () => {
           email: 'user@ok.com',
           password: 'passwordok'
         });
-        //console.log(response);
     });
     
     it('Retorna o status 200', () => {
@@ -112,9 +86,8 @@ describe('POST /login', () => {
     it('A propriedade "token" deve conter um token JWT, com email usado no login', () => {
       const token = response.body.token;
       const payload = jwt.decode(token)
-      console.log(token);
+      console.log(payload);
       expect(payload.email).to.be.equals('user@ok.com');
     })
-  });
+  });*/
 })
-
