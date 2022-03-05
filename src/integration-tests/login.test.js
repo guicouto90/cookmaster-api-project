@@ -94,7 +94,6 @@ describe('POST /login', () => {
           email: 'user@ok.com',
           password: 'passwordok'
         });
-        //console.log(response);
     });
     
     it('Retorna o status 200', () => {
@@ -112,7 +111,6 @@ describe('POST /login', () => {
     it('A propriedade "token" deve conter um token JWT, com email usado no login', () => {
       const token = response.body.token;
       const payload = jwt.decode(token)
-      console.log(token);
       expect(payload.email).to.be.equals('user@ok.com');
     })
   });

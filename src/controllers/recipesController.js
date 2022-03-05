@@ -1,5 +1,4 @@
 const { 
-  validateRecipe, 
   insertRecipe, 
   getAllRecipes, 
   getById,
@@ -10,11 +9,7 @@ const {
 
 const newRecipe = async (req, res, next) => {
   try {
-    const { name, ingredients, preparation } = req.body;
-    const { email } = req;
-
-    validateRecipe(req.body);
-    const recipe = await insertRecipe(name, ingredients, preparation, email);
+    const recipe = await insertRecipe(req.body, req.email);
 
     return res.status(201).json(recipe);
   } catch (error) {
@@ -48,11 +43,7 @@ const listById = async (req, res, next) => {
 
 const updateById = async (req, res, next) => {
   try {
-    const { id } = req.params;
-    const { email } = req;
-    console.log(email);
-    validateRecipe(req.body);
-    const recipe = await updateRecipe(id, email, req.body);
+    const recipe = await updateRecipe(req.params.id, req.email, req.body);
 
     return res.status(200).json(recipe);
   } catch (error) {

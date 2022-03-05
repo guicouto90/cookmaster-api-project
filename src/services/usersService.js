@@ -25,6 +25,8 @@ const verifyEmail = async (email) => {
 };
 
 const insertUser = async (name, email, password) => {
+  validateUser(name, email, password);   
+  await verifyEmail(email);
   const userId = await createUser(name, email, password, 'user');
 
   const newUser = {
@@ -53,7 +55,10 @@ const validateRoleAdmin = async (email) => {
   }
 };
 
-const insertAdmin = async (name, email, password) => {
+const insertAdmin = async (name, email, password, emailRole) => {
+  validateUser(name, email, password);
+  await verifyEmail(email);
+  await validateRoleAdmin(emailRole);
   const userId = await createUser(name, email, password, 'admin');
 
   const newUser = {

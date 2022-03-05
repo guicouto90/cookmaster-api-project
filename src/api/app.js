@@ -21,6 +21,8 @@ app.use('/login', loginRouter);
 
 app.use('/recipes', recipesRouter);
 
+// require('../uploads')
+
 app.use('/images', express.static(path.resolve(__dirname, '..', 'uploads')));
 
 app.use(errorMiddleware);
