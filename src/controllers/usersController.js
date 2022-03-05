@@ -1,19 +1,12 @@
 const { 
   insertUser, 
-  validateUser, 
-  verifyEmail, 
   listUsers, 
-  validateRoleAdmin, 
   insertAdmin, 
 } = require('../services/usersService');
 
 const newUser = async (req, res, next) => {
   try {
     const { name, email, password } = req.body;
-    validateUser(name, email, password);
-    
-    await verifyEmail(email);
-    
     const user = await insertUser(name, email, password);
     
     return res.status(201).json(user);
@@ -37,11 +30,7 @@ const showUsers = async (req, res, next) => {
 const newAdmin = async (req, res, next) => {
   try {
     const { name, email, password } = req.body;
-    validateUser(name, email, password);
-    await verifyEmail(email);
-
-    await validateRoleAdmin(req.email);
-    const admin = await insertAdmin(name, email, password);
+    const admin = await insertAdmin(name, email, password, req.email);
 
     return res.status(201).json(admin);
   } catch (error) {

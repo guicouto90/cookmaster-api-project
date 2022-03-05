@@ -25,7 +25,9 @@ const validateRecipe = (body) => {
   }
 };
 
-const insertRecipe = async (name, ingredients, preparation, email) => {
+const insertRecipe = async (body, email) => {
+  const { name, ingredients, preparation } = body;
+  validateRecipe(body);
   const { _id } = await findByEmail(email);
 
   const recipeId = await createRecipe(name, ingredients, preparation, _id);
@@ -66,6 +68,7 @@ const getById = async (id) => {
 };
 
 const updateRecipe = async (id, email, body) => {
+  validateRecipe(body);
   const { _id } = await findByEmail(email);
   await editRecipe(id, body, _id);
   const { name, ingredients, preparation } = body;

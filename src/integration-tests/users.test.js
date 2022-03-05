@@ -169,6 +169,22 @@ describe('POST /users', () => {
     it('Retorna um objeto no body que tenha a propriedade "user"', () => {
       expect(response.body).to.have.property('user');
     });
+
+    it('Retorna um objeto no body que tenha a propriedade "name"', () => {
+      expect(response.body.user).to.have.property('name');
+    });
+
+    it('Retorna um objeto no body que tenha a propriedade "email"', () => {
+      expect(response.body.user).to.have.property('email');
+    });
+
+    it('Retorna um objeto no body que tenha a propriedade "role"', () => {
+      expect(response.body.user).to.have.property('role');
+    });
+
+    it('Retorna um objeto no body que tenha a propriedade "_id"', () => {
+      expect(response.body.user).to.have.property('_id');
+    });
   });
 });
 

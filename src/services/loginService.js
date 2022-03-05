@@ -1,3 +1,4 @@
+const { generateToken } = require('../middlewares/auth');
 const { findUser } = require('../models/loginModel');
 
 const verifyLogin = (email, password) => {
@@ -16,7 +17,16 @@ const verifyUser = async (email, password) => {
   }
 };
 
+const insertLogin = async (email, password) => {
+  verifyLogin(email, password);
+  await verifyUser(email, password);
+  const token = generateToken(email);
+
+  return token;
+};
+
 module.exports = {
   verifyLogin,
   verifyUser,
+  insertLogin,
 };
